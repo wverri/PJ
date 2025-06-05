@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultima Online Tower Defense</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/ui.css">
+    <link rel="stylesheet" href="styles/game.css">
+</head>
+<body>
+    <div id="game-container">
+        <header class="game-header">
+            <div class="header-left">
+                <h1>Ultima Online Tower Defense</h1>
+                <div class="player-stats">
+                    <div class="stat">
+                        <span class="stat-label">Ouro:</span>
+                        <span id="gold" class="stat-value">500</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Vida:</span>
+                        <span id="health" class="stat-value">20</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Wave:</span>
+                        <span id="wave" class="stat-value">1</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <button id="start-wave-btn" class="btn btn-primary">Iniciar Wave</button>
+                <button id="pause-btn" class="btn btn-secondary">Pausar</button>
+            </div>
+        </header>
+
+        <main class="game-main">
+            <div class="game-area">
+                <canvas id="game-canvas" width="800" height="600"></canvas>
+                <div id="game-overlay" class="game-overlay">
+                    <div id="tower-info" class="tower-info hidden">
+                        <h3 id="tower-name"></h3>
+                        <p id="tower-description"></p>
+                        <div class="tower-stats">
+                            <div class="stat">Dano: <span id="tower-damage"></span></div>
+                            <div class="stat">Alcance: <span id="tower-range"></span></div>
+                            <div class="stat">Velocidade: <span id="tower-speed"></span></div>
+                        </div>
+                        <div class="tower-actions">
+                            <button id="upgrade-tower-btn" class="btn btn-upgrade">Melhorar</button>
+                            <button id="sell-tower-btn" class="btn btn-sell">Vender</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="tower-shop">
+                <h2>Loja de Torres</h2>
+                <div class="tower-grid" id="tower-shop">
+                    <!-- Torres serão adicionadas dinamicamente -->
+                </div>
+                
+                <div class="spell-shop">
+                    <h3>Magias</h3>
+                    <div class="spell-grid" id="spell-shop">
+                        <!-- Magias serão adicionadas dinamicamente -->
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <div id="game-over-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2 id="game-over-title">Fim de Jogo</h2>
+                <p id="game-over-message"></p>
+                <div class="modal-actions">
+                    <button id="restart-btn" class="btn btn-primary">Jogar Novamente</button>
+                    <button id="menu-btn" class="btn btn-secondary">Menu Principal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts Core -->
+    <script src="js/core/Vector2D.js?v=16"></script>
+    
+    <!-- Scripts Utilitários -->
+    <script src="js/utils/constants.js?v=16"></script>
+    <script src="js/utils/helpers.js?v=16"></script>
+    
+    <script src="js/core/GameObject.js?v=16"></script>
+    
+    <!-- Scripts de Entidades -->
+    <script src="js/entities/Enemy.js?v=16"></script>
+    <script src="js/entities/Tower.js?v=16"></script>
+    <script src="js/entities/Projectile.js?v=16"></script>
+    
+    <!-- Scripts de Sistemas -->
+    <script src="js/systems/EffectSystem.js?v=16"></script>
+    
+    <!-- Scripts de Estratégias -->
+    <script src="js/strategies/AttackStrategy.js?v=16"></script>
+    
+    <!-- Scripts de Managers -->
+    <script src="js/managers/GameStateManager.js?v=16"></script>
+    <script src="js/managers/GameLoopManager.js?v=16"></script>
+    <script src="js/managers/InputManager.js?v=16"></script>
+    <script src="js/managers/WaveManager.js?v=16"></script>
+    <script src="js/managers/TowerManager.js?v=16"></script>
+    <script src="js/managers/GameManager.js?v=16"></script>
+    <script src="js/managers/UIManager.js?v=16"></script>
+    
+    <!-- Scripts de Renderização -->
+    <script src="js/renderers/GameRenderer.js?v=16"></script>
+    
+    <!-- Script Principal -->
+    <script src="js/main.js?v=16"></script>
+</body>
+</html> 

@@ -1,0 +1,422 @@
+/* Efeitos visuais do jogo */
+.damage-text {
+    position: absolute;
+    color: var(--uo-red);
+    font-weight: bold;
+    font-size: 14px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+    z-index: 100;
+    animation: damageFloat 1s ease-out forwards;
+}
+
+@keyframes damageFloat {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-30px) scale(1.2);
+    }
+}
+
+.gold-text {
+    position: absolute;
+    color: var(--uo-gold);
+    font-weight: bold;
+    font-size: 12px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+    z-index: 100;
+    animation: goldFloat 1.5s ease-out forwards;
+}
+
+@keyframes goldFloat {
+    0% {
+        opacity: 1;
+        transform: translateY(0) translateX(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-40px) translateX(20px) scale(0.8);
+    }
+}
+
+/* Efeitos de partículas */
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--uo-gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 50;
+}
+
+.particle.fire {
+    background: radial-gradient(circle, #FF4500 0%, #FF6347 50%, #DC143C 100%);
+    animation: fireParticle 0.8s ease-out forwards;
+}
+
+.particle.ice {
+    background: radial-gradient(circle, #87CEEB 0%, #4169E1 50%, #191970 100%);
+    animation: iceParticle 1s ease-out forwards;
+}
+
+.particle.poison {
+    background: radial-gradient(circle, #ADFF2F 0%, #32CD32 50%, #228B22 100%);
+    animation: poisonParticle 1.2s ease-out forwards;
+}
+
+@keyframes fireParticle {
+    0% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.3) translateY(-20px);
+    }
+}
+
+@keyframes iceParticle {
+    0% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.5) rotate(180deg);
+    }
+}
+
+@keyframes poisonParticle {
+    0% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.2) translateY(-10px);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.8) translateY(-25px);
+    }
+}
+
+/* Efeitos de explosão */
+.explosion {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 75;
+    animation: explosion 0.6s ease-out forwards;
+}
+
+.explosion.fire {
+    background: radial-gradient(circle, 
+        rgba(255, 255, 255, 0.8) 0%,
+        rgba(255, 69, 0, 0.6) 30%,
+        rgba(255, 99, 71, 0.4) 60%,
+        rgba(220, 20, 60, 0.2) 100%);
+}
+
+.explosion.ice {
+    background: radial-gradient(circle, 
+        rgba(255, 255, 255, 0.8) 0%,
+        rgba(135, 206, 235, 0.6) 30%,
+        rgba(65, 105, 225, 0.4) 60%,
+        rgba(25, 25, 112, 0.2) 100%);
+}
+
+@keyframes explosion {
+    0% {
+        opacity: 1;
+        transform: scale(0.1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.5);
+    }
+}
+
+/* Efeitos de status dos inimigos */
+.status-effect {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    pointer-events: none;
+    z-index: 60;
+}
+
+.status-effect.burning {
+    background: radial-gradient(circle, #FF4500 0%, #DC143C 100%);
+    animation: burning 0.5s infinite alternate;
+}
+
+.status-effect.frozen {
+    background: radial-gradient(circle, #87CEEB 0%, #4169E1 100%);
+    animation: frozen 2s infinite;
+}
+
+.status-effect.poisoned {
+    background: radial-gradient(circle, #ADFF2F 0%, #32CD32 100%);
+    animation: poisoned 1s infinite;
+}
+
+@keyframes burning {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+@keyframes frozen {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
+
+@keyframes poisoned {
+    0%, 100% {
+        transform: translateY(0);
+        opacity: 0.7;
+    }
+    50% {
+        transform: translateY(-2px);
+        opacity: 1;
+    }
+}
+
+/* Indicadores de alcance das torres */
+.range-indicator {
+    position: absolute;
+    border: 2px dashed rgba(255, 215, 0, 0.6);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10;
+    animation: rangeIndicator 2s infinite;
+}
+
+@keyframes rangeIndicator {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.02);
+    }
+}
+
+/* Efeitos de hover para torres */
+.tower-hover {
+    position: absolute;
+    border: 3px solid var(--uo-gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 20;
+    animation: towerHover 1s infinite;
+}
+
+@keyframes towerHover {
+    0%, 100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+}
+
+/* Efeitos de seleção */
+.selection-indicator {
+    position: absolute;
+    border: 3px solid var(--uo-gold);
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 15;
+    animation: selection 1.5s infinite;
+}
+
+@keyframes selection {
+    0%, 100% {
+        opacity: 0.7;
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    }
+    50% {
+        opacity: 1;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    }
+}
+
+/* Efeitos de caminho */
+.path-highlight {
+    background: rgba(139, 69, 19, 0.3);
+    border: 1px solid var(--uo-brown);
+    animation: pathHighlight 3s infinite;
+}
+
+@keyframes pathHighlight {
+    0%, 100% {
+        background: rgba(139, 69, 19, 0.2);
+    }
+    50% {
+        background: rgba(139, 69, 19, 0.4);
+    }
+}
+
+/* Efeitos de wave */
+.wave-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, var(--uo-parchment) 0%, var(--uo-dark-parchment) 100%);
+    color: var(--uo-dark-brown);
+    padding: 20px 40px;
+    border-radius: var(--border-radius);
+    border: 3px solid var(--uo-dark-brown);
+    box-shadow: var(--shadow-heavy);
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    z-index: 500;
+    animation: waveIndicator 3s ease-out forwards;
+}
+
+@keyframes waveIndicator {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+    20% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+    80% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+}
+
+/* Efeitos de vitória/derrota */
+.victory-effect {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, 
+        rgba(255, 215, 0, 0.1) 0%,
+        rgba(255, 215, 0, 0.05) 50%,
+        transparent 100%);
+    pointer-events: none;
+    z-index: 200;
+    animation: victory 2s ease-out;
+}
+
+.defeat-effect {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, 
+        rgba(220, 20, 60, 0.1) 0%,
+        rgba(220, 20, 60, 0.05) 50%,
+        transparent 100%);
+    pointer-events: none;
+    z-index: 200;
+    animation: defeat 2s ease-out;
+}
+
+@keyframes victory {
+    0%, 100% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes defeat {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.3;
+    }
+}
+
+/* Efeitos de loading */
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--uo-dark-brown);
+    border-top: 4px solid var(--uo-gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Efeitos de progresso */
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--uo-dark-stone);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    border: 1px solid var(--uo-brown);
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--uo-green) 0%, var(--uo-dark-green) 100%);
+    transition: width 0.3s ease;
+    border-radius: var(--border-radius);
+}
+
+.progress-fill.health {
+    background: linear-gradient(90deg, var(--uo-red) 0%, var(--uo-dark-red) 100%);
+}
+
+.progress-fill.mana {
+    background: linear-gradient(90deg, var(--uo-blue) 0%, var(--uo-dark-blue) 100%);
+} 

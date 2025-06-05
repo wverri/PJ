@@ -1,0 +1,392 @@
+/* Header do jogo */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, var(--uo-dark-brown) 0%, var(--uo-brown) 100%);
+    border-bottom: 3px solid var(--uo-gold);
+    box-shadow: var(--shadow-heavy);
+    position: relative;
+}
+
+.game-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--uo-gold) 50%, transparent 100%);
+}
+
+.header-left h1 {
+    color: var(--uo-gold);
+    font-size: 24px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 8px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.player-stats {
+    display: flex;
+    gap: 24px;
+}
+
+.stat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--uo-dark-gold);
+}
+
+.stat-label {
+    color: var(--uo-parchment);
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.stat-value {
+    color: var(--uo-gold);
+    font-weight: bold;
+    font-size: 16px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.header-right {
+    display: flex;
+    gap: 12px;
+}
+
+/* Área principal do jogo */
+.game-main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.game-area {
+    flex: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+}
+
+#game-canvas {
+    border: 3px solid var(--uo-dark-brown);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-heavy);
+    background: #2F4F2F;
+    cursor: crosshair;
+}
+
+.game-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+/* Informações da torre */
+.tower-info {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: linear-gradient(135deg, var(--uo-parchment) 0%, var(--uo-dark-parchment) 100%);
+    color: var(--uo-dark-brown);
+    padding: 16px;
+    border-radius: var(--border-radius);
+    border: var(--border-medieval);
+    box-shadow: var(--shadow-heavy);
+    min-width: 250px;
+    pointer-events: auto;
+}
+
+.tower-info h3 {
+    color: var(--uo-dark-brown);
+    margin-bottom: 8px;
+    font-size: 18px;
+    text-align: center;
+    border-bottom: 2px solid var(--uo-dark-brown);
+    padding-bottom: 4px;
+}
+
+.tower-info p {
+    margin-bottom: 12px;
+    font-style: italic;
+    text-align: center;
+}
+
+.tower-stats {
+    margin-bottom: 16px;
+}
+
+.tower-stats .stat {
+    background: rgba(139, 69, 19, 0.1);
+    border: 1px solid var(--uo-brown);
+    margin-bottom: 4px;
+    justify-content: space-between;
+}
+
+.tower-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.tower-actions .btn {
+    flex: 1;
+    font-size: 11px;
+}
+
+/* Loja de torres */
+.tower-shop {
+    width: 280px;
+    background: linear-gradient(135deg, var(--uo-dark-parchment) 0%, var(--uo-parchment) 100%);
+    border-left: 3px solid var(--uo-dark-brown);
+    padding: 16px;
+    overflow-y: auto;
+    color: var(--uo-dark-brown);
+}
+
+.tower-shop h2 {
+    color: var(--uo-dark-brown);
+    text-align: center;
+    margin-bottom: 16px;
+    font-size: 20px;
+    border-bottom: 2px solid var(--uo-dark-brown);
+    padding-bottom: 8px;
+}
+
+.tower-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.tower-item {
+    background: linear-gradient(135deg, var(--uo-parchment) 0%, var(--uo-dark-parchment) 100%);
+    border: 2px solid var(--uo-brown);
+    border-radius: var(--border-radius);
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.tower-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+    border-color: var(--uo-gold);
+}
+
+.tower-item.selected {
+    border-color: var(--uo-gold);
+    background: linear-gradient(135deg, var(--uo-gold) 0%, var(--uo-dark-gold) 100%);
+    color: var(--uo-dark-brown);
+}
+
+.tower-item.affordable {
+    border-color: var(--uo-green);
+}
+
+.tower-item.expensive {
+    opacity: 0.6;
+    border-color: var(--uo-red);
+}
+
+.tower-icon {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 8px;
+    background: var(--uo-brown);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--uo-gold);
+    border: 2px solid var(--uo-dark-brown);
+}
+
+.tower-name {
+    font-weight: bold;
+    margin-bottom: 4px;
+    font-size: 12px;
+}
+
+.tower-cost {
+    color: var(--uo-gold);
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.tower-cost::before {
+    content: '💰 ';
+}
+
+/* Loja de magias */
+.spell-shop h3 {
+    color: var(--uo-dark-brown);
+    text-align: center;
+    margin-bottom: 12px;
+    font-size: 16px;
+    border-bottom: 1px solid var(--uo-dark-brown);
+    padding-bottom: 4px;
+}
+
+.spell-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+.spell-item {
+    background: linear-gradient(135deg, var(--uo-blue) 0%, var(--uo-dark-blue) 100%);
+    color: var(--uo-parchment);
+    border: 2px solid var(--uo-dark-blue);
+    border-radius: var(--border-radius);
+    padding: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 12px;
+}
+
+.spell-item:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-light);
+    border-color: var(--uo-gold);
+}
+
+.spell-item.cooldown {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, var(--uo-parchment) 0%, var(--uo-dark-parchment) 100%);
+    color: var(--uo-dark-brown);
+    padding: 32px;
+    border-radius: var(--border-radius);
+    border: 3px solid var(--uo-dark-brown);
+    box-shadow: var(--shadow-heavy);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.modal-content h2 {
+    margin-bottom: 16px;
+    font-size: 24px;
+    color: var(--uo-dark-brown);
+}
+
+.modal-content p {
+    margin-bottom: 24px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+/* Tooltips */
+.tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    color: var(--uo-parchment);
+    padding: 8px 12px;
+    border-radius: var(--border-radius);
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 1000;
+    border: 1px solid var(--uo-gold);
+    max-width: 200px;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    .tower-shop {
+        width: 240px;
+    }
+    
+    .tower-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .game-header {
+        padding: 12px 16px;
+    }
+    
+    .header-left h1 {
+        font-size: 20px;
+    }
+    
+    .player-stats {
+        gap: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .game-main {
+        flex-direction: column;
+    }
+    
+    .tower-shop {
+        width: 100%;
+        height: 200px;
+        border-left: none;
+        border-top: 3px solid var(--uo-dark-brown);
+    }
+    
+    .tower-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    #game-canvas {
+        width: 100%;
+        height: auto;
+        max-width: 600px;
+        max-height: 400px;
+    }
+    
+    .game-header {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .player-stats {
+        order: 2;
+    }
+    
+    .header-right {
+        order: 1;
+    }
+} 
