@@ -80,37 +80,78 @@ class WaveManager extends EventEmitter {
             });
         }
         
-        // Ondas 13-17: Elite - Liches e mais variedade
+        // Ondas 13-17: Elite - Liches e inimigos élite
         for (let i = 13; i <= 17; i++) {
             waves.push({
                 number: i,
                 strategy: 'elite',
                 enemyCount: 18 + i * 2,       // 44, 46, 48, 50, 52 inimigos
-                enemyTypes: ['SKELETON', 'TROLL', 'LICH'],
+                enemyTypes: ['SKELETON', 'TROLL', 'LICH', 'ORC_WARLORD', 'SKELETON_KING'],
                 spawnInterval: 700 - (i - 13) * 25,
                 difficulty: 2.0 + (i * 0.2)
             });
         }
         
-        // Ondas 18-20: Finais - Todos os tipos
-        for (let i = 18; i <= 20; i++) {
+        // Ondas 18-22: Inimigos Especiais
+        for (let i = 18; i <= 22; i++) {
             waves.push({
                 number: i,
                 strategy: 'elite',
-                enemyCount: 20 + i * 3,       // 74, 77, 80 inimigos
-                enemyTypes: ['TROLL', 'LICH', 'DAEMON'],
+                enemyCount: 20 + i * 2,       // 56, 58, 60, 62, 64 inimigos
+                enemyTypes: ['TROLL', 'LICH', 'DAEMON', 'TROLL_BERSERKER', 'ELEMENTAL_FIRE', 'ELEMENTAL_ICE'],
+                spawnInterval: 650 - (i - 18) * 20,
+                difficulty: 2.5 + (i * 0.25)
+            });
+        }
+        
+        // Ondas 23-27: Inimigos Avançados
+        for (let i = 23; i <= 27; i++) {
+            waves.push({
+                number: i,
+                strategy: 'elite',
+                enemyCount: 22 + i * 2,       // 68, 70, 72, 74, 76 inimigos
+                enemyTypes: ['DAEMON', 'ARCHLICH', 'VAMPIRE_LORD', 'GOLEM_STONE', 'WRAITH'],
                 spawnInterval: 600,
                 difficulty: 3.0 + (i * 0.3)
             });
         }
         
-        // Ondas Boss especiais (5, 10, 15, 20)
-        [5, 10, 15, 20].forEach(waveNum => {
+        // Ondas 28-30: Finais Épicas
+        for (let i = 28; i <= 30; i++) {
+            waves.push({
+                number: i,
+                strategy: 'boss',
+                enemyCount: 25 + i * 3,       // 109, 112, 115 inimigos
+                enemyTypes: ['ANCIENT_DRAGON', 'DAEMON_LORD', 'ARCHLICH', 'VAMPIRE_LORD', 'BALRON', 'SHADOW_LORD', 'TITAN'],
+                spawnInterval: 800, // Mais lento para dar tempo de reagir
+                difficulty: 4.0 + (i * 0.5)
+            });
+        }
+        
+        // Ondas Boss especiais (5, 10, 15, 20, 25, 30)
+        [5, 10, 15, 20, 25, 30].forEach(waveNum => {
             if (waves[waveNum - 1]) {
-                waves[waveNum - 1].strategy = 'boss';
-                waves[waveNum - 1].enemyTypes.push('DRAGON');
-                waves[waveNum - 1].enemyCount += 5; // Mais inimigos nas ondas boss
-                waves[waveNum - 1].difficulty += 0.5; // Dificuldade extra
+                const wave = waves[waveNum - 1];
+                wave.strategy = 'boss';
+                
+                // Adiciona chefes específicos baseado na onda
+                if (waveNum === 5) {
+                    wave.enemyTypes.push('DRAGON');
+                } else if (waveNum === 10) {
+                    wave.enemyTypes.push('DRAGON', 'ORC_WARLORD');
+                } else if (waveNum === 15) {
+                    wave.enemyTypes.push('ANCIENT_DRAGON', 'SKELETON_KING');
+                } else if (waveNum === 20) {
+                    wave.enemyTypes.push('DAEMON_LORD', 'TROLL_BERSERKER');
+                } else if (waveNum === 25) {
+                    wave.enemyTypes.push('BALRON', 'SHADOW_LORD');
+                } else if (waveNum === 30) {
+                    wave.enemyTypes = ['TITAN', 'BALRON', 'SHADOW_LORD']; // Onda final épica
+                }
+                
+                wave.enemyCount += 8; // Mais inimigos nas ondas boss
+                wave.difficulty += 0.8; // Dificuldade extra
+                wave.spawnInterval = Math.max(600, wave.spawnInterval); // Não muito rápido
             }
         });
         

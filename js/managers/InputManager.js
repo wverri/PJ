@@ -1,64 +1,83 @@
 /**
- * InputManager - Gerencia todas as entradas do usuário
- * Implementa o padrão Command e Observer
+ * InputManager - Gerencia entrada do usuário
+ * Implementa padrão Command e Observer
  */
 class InputManager extends EventEmitter {
     constructor(canvas) {
         super();
         
         this.canvas = canvas;
-        this.keys = new Map();
-        this.mouse = {
+        this.isEnabled = true;
+        
+        // Comandos registrados
+        this.commands = new Map();
+        
+        // Estado do mouse
+        this.mouseState = {
             x: 0,
             y: 0,
             isDown: false,
             button: -1
         };
         
-        this.commands = new Map();
-        this.keyBindings = new Map();
+        // Estado do teclado
+        this.keyState = new Map();
         
-        this.setupDefaultBindings();
-        this.attachEventListeners();
+        // Configurações
+        this.config = {
+            doubleClickDelay: 300,
+            longPressDelay: 500
+        };
+        
+        this.setupEventHandlers();
+        console.log('🎮 InputManager inicializado');
     }
     
     /**
-     * Configura bindings padrão
+     * Configura manipuladores de eventos
      */
-    setupDefaultBindings() {
-        this.keyBindings.set('Space', 'PAUSE_GAME');
-        this.keyBindings.set('Escape', 'PAUSE_GAME');
-        this.keyBindings.set('KeyR', 'RESTART_GAME');
-        this.keyBindings.set('KeyD', 'TOGGLE_DEBUG');
-        this.keyBindings.set('Digit1', 'SELECT_TOWER_ARCHER');
-        this.keyBindings.set('Digit2', 'SELECT_TOWER_MAGE');
-        this.keyBindings.set('Digit3', 'SELECT_TOWER_ICE_MAGE');
-        this.keyBindings.set('Digit4', 'SELECT_TOWER_POISON');
-        this.keyBindings.set('Digit5', 'SELECT_TOWER_CANNON');
-        this.keyBindings.set('Digit6', 'SELECT_TOWER_LIGHTNING');
-        this.keyBindings.set('KeyQ', 'CAST_FIREBALL');
-        this.keyBindings.set('KeyW', 'CAST_FREEZE');
-        this.keyBindings.set('KeyE', 'CAST_LIGHTNING_STORM');
-        this.keyBindings.set('KeyT', 'CAST_HEAL');
-    }
-    
-    /**
-     * Anexa event listeners
-     */
-    attachEventListeners() {
-        // Eventos do canvas
-        this.canvas.addEventListener('click', this.handleCanvasClick.bind(this));
-        this.canvas.addEventListener('mousemove', this.handleCanvasMouseMove.bind(this));
-        this.canvas.addEventListener('mouseleave', this.handleCanvasMouseLeave.bind(this));
-        this.canvas.addEventListener('contextmenu', this.handleCanvasRightClick.bind(this));
+    setupEventHandlers() {
+        // Eventos do mouse no canvas
+        this.canvas.addEventListener('click', (event) => {
+            this.handleCanvasClick(event);
+        });
+        
+        this.canvas.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+            this.handleCanvasRightClick(event);
+        });
+        
+        this.canvas.addEventListener('mousemove', (event) => {
+            this.handleCanvasMouseMove(event);
+        });
+        
+        this.canvas.addEventListener('mousedown', (event) => {
+            this.handleCanvasMouseDown(event);
+        });
+        
+        this.canvas.addEventListener('mouseup', (event) => {
+            this.handleCanvasMouseUp(event);
+        });
         
         // Eventos do teclado
-        document.addEventListener('keydown', this.handleKeyDown.bind(this));
-        document.addEventListener('keyup', this.handleKeyUp.bind(this));
+        document.addEventListener('keydown', (event) => {
+            this.handleKeyDown(event);
+        });
+        
+        document.addEventListener('keyup', (event) => {
+            this.handleKeyUp(event);
+        });
         
         // Eventos da janela
-        window.addEventListener('focus', this.handleWindowFocus.bind(this));
-        window.addEventListener('blur', this.handleWindowBlur.bind(this));
+        window.addEventListener('blur', () => {
+            this.emit('windowBlur');
+        });
+        
+        window.addEventListener('focus', () => {
+            this.emit('windowFocus');
+        });
+        
+        console.log('⌨️ Event handlers do InputManager configurados');
     }
     
     /**
@@ -66,68 +85,108 @@ class InputManager extends EventEmitter {
      */
     registerCommand(name, command) {
         this.commands.set(name, command);
-    }
-    
-    /**
-     * Executa um comando
-     */
-    executeCommand(commandName, ...args) {
-        const command = this.commands.get(commandName);
-        if (command && typeof command.execute === 'function') {
-            command.execute(...args);
-        }
+        console.log(`⌨️ Comando registrado: ${name}`);
     }
     
     /**
      * Manipula clique no canvas
      */
     handleCanvasClick(event) {
-        const position = DOMUtils.getMousePosition(this.canvas, event);
-        this.emit('canvasClick', position, event);
-    }
-    
-    /**
-     * Manipula movimento do mouse no canvas
-     */
-    handleCanvasMouseMove(event) {
-        const position = DOMUtils.getMousePosition(this.canvas, event);
-        this.mouse.x = position.x;
-        this.mouse.y = position.y;
-        this.emit('canvasMouseMove', position, event);
-    }
-    
-    /**
-     * Manipula saída do mouse do canvas
-     */
-    handleCanvasMouseLeave(event) {
-        this.emit('canvasMouseLeave', event);
+        if (!this.isEnabled) return;
+        
+        const position = this.getCanvasPosition(event);
+        console.log('🎯 Clique em:', position);
+        
+        this.mouseState.x = position.x;
+        this.mouseState.y = position.y;
+        
+        this.emit('canvasClick', position);
     }
     
     /**
      * Manipula clique direito no canvas
      */
     handleCanvasRightClick(event) {
-        event.preventDefault();
-        const position = DOMUtils.getMousePosition(this.canvas, event);
-        this.emit('canvasRightClick', position, event);
+        if (!this.isEnabled) return;
+        
+        const position = this.getCanvasPosition(event);
+        
+        this.emit('canvasRightClick', position);
+    }
+    
+    /**
+     * Manipula movimento do mouse no canvas
+     */
+    handleCanvasMouseMove(event) {
+        if (!this.isEnabled) return;
+        
+        const position = this.getCanvasPosition(event);
+        
+        this.mouseState.x = position.x;
+        this.mouseState.y = position.y;
+        
+        this.emit('canvasMouseMove', position);
+    }
+    
+    /**
+     * Manipula mouse pressionado
+     */
+    handleCanvasMouseDown(event) {
+        if (!this.isEnabled) return;
+        
+        this.mouseState.isDown = true;
+        this.mouseState.button = event.button;
+        
+        const position = this.getCanvasPosition(event);
+        this.emit('canvasMouseDown', position, event.button);
+    }
+    
+    /**
+     * Manipula mouse solto
+     */
+    handleCanvasMouseUp(event) {
+        if (!this.isEnabled) return;
+        
+        this.mouseState.isDown = false;
+        this.mouseState.button = -1;
+        
+        const position = this.getCanvasPosition(event);
+        this.emit('canvasMouseUp', position, event.button);
+    }
+    
+    /**
+     * Obtém posição relativa ao canvas
+     */
+    getCanvasPosition(event) {
+        const rect = this.canvas.getBoundingClientRect();
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+        
+        const position = {
+            x: Math.round((event.clientX - rect.left) * scaleX),
+            y: Math.round((event.clientY - rect.top) * scaleY)
+        };
+        
+        return position;
     }
     
     /**
      * Manipula tecla pressionada
      */
     handleKeyDown(event) {
+        if (!this.isEnabled) return;
+        
         const key = event.code;
         
-        if (!this.keys.get(key)) {
-            this.keys.set(key, true);
-            
-            const command = this.keyBindings.get(key);
-            if (command) {
-                this.executeCommand(command);
-                this.emit('commandExecuted', command);
-            }
-            
+        if (!this.keyState.get(key)) {
+            this.keyState.set(key, true);
             this.emit('keyDown', key, event);
+            
+            // Executa comando se registrado
+            const command = this.getCommandForKey(key);
+            if (command) {
+                command.execute();
+            }
         }
     }
     
@@ -135,60 +194,75 @@ class InputManager extends EventEmitter {
      * Manipula tecla solta
      */
     handleKeyUp(event) {
+        if (!this.isEnabled) return;
+        
         const key = event.code;
-        this.keys.set(key, false);
+        this.keyState.set(key, false);
         this.emit('keyUp', key, event);
     }
     
     /**
-     * Manipula foco da janela
+     * Obtém comando para tecla
      */
-    handleWindowFocus() {
-        this.emit('windowFocus');
-    }
-    
-    /**
-     * Manipula perda de foco da janela
-     */
-    handleWindowBlur() {
-        // Limpa todas as teclas quando perde o foco
-        this.keys.clear();
-        this.emit('windowBlur');
+    getCommandForKey(key) {
+        const keyMappings = {
+            'Space': 'PAUSE_GAME',
+            'Escape': 'PAUSE_GAME',
+            'KeyR': 'RESTART_GAME',
+            'KeyD': 'TOGGLE_DEBUG',
+            'Digit1': 'SELECT_TOWER_ARCHER',
+            'Digit2': 'SELECT_TOWER_MAGE',
+            'Digit3': 'SELECT_TOWER_ICE_MAGE',
+            'Digit4': 'SELECT_TOWER_POISON',
+            'Digit5': 'SELECT_TOWER_CANNON',
+            'Digit6': 'SELECT_TOWER_LIGHTNING',
+            'KeyQ': 'CAST_FIREBALL',
+            'KeyW': 'CAST_FREEZE',
+            'KeyE': 'CAST_LIGHTNING_STORM',
+            'KeyT': 'CAST_HEAL'
+        };
+        
+        const commandName = keyMappings[key];
+        return commandName ? this.commands.get(commandName) : null;
     }
     
     /**
      * Verifica se uma tecla está pressionada
      */
     isKeyPressed(key) {
-        return this.keys.get(key) || false;
+        return this.keyState.get(key) || false;
     }
     
     /**
      * Obtém posição atual do mouse
      */
-    getCurrentMousePosition() {
-        return { x: this.mouse.x, y: this.mouse.y };
-    }
-    
-    /**
-     * Define binding de tecla
-     */
-    setKeyBinding(key, command) {
-        this.keyBindings.set(key, command);
-    }
-    
-    /**
-     * Remove binding de tecla
-     */
-    removeKeyBinding(key) {
-        this.keyBindings.delete(key);
+    getMousePosition() {
+        return {
+            x: this.mouseState.x,
+            y: this.mouseState.y
+        };
     }
     
     /**
      * Limpa todas as teclas
      */
     clearKeys() {
-        this.keys.clear();
+        this.keyState.clear();
+    }
+    
+    /**
+     * Verifica se mouse está pressionado
+     */
+    isMouseDown() {
+        return this.mouseState.isDown;
+    }
+    
+    /**
+     * Habilita/desabilita entrada
+     */
+    setEnabled(enabled) {
+        this.isEnabled = enabled;
+        console.log(`🎮 InputManager ${enabled ? 'habilitado' : 'desabilitado'}`);
     }
     
     /**
@@ -197,20 +271,23 @@ class InputManager extends EventEmitter {
     destroy() {
         // Remove event listeners
         this.canvas.removeEventListener('click', this.handleCanvasClick);
-        this.canvas.removeEventListener('mousemove', this.handleCanvasMouseMove);
-        this.canvas.removeEventListener('mouseleave', this.handleCanvasMouseLeave);
         this.canvas.removeEventListener('contextmenu', this.handleCanvasRightClick);
+        this.canvas.removeEventListener('mousemove', this.handleCanvasMouseMove);
+        this.canvas.removeEventListener('mousedown', this.handleCanvasMouseDown);
+        this.canvas.removeEventListener('mouseup', this.handleCanvasMouseUp);
         
         document.removeEventListener('keydown', this.handleKeyDown);
         document.removeEventListener('keyup', this.handleKeyUp);
         
-        window.removeEventListener('focus', this.handleWindowFocus);
-        window.removeEventListener('blur', this.handleWindowBlur);
+        window.removeEventListener('blur', () => {});
+        window.removeEventListener('focus', () => {});
         
-        // Limpa dados
-        this.keys.clear();
+        // Limpa estado
         this.commands.clear();
-        this.keyBindings.clear();
+        this.keyState.clear();
+        
         this.removeAllListeners();
+        
+        console.log('🗑️ InputManager destruído');
     }
 } 

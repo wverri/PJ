@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/ui.css">
     <link rel="stylesheet" href="styles/game.css">
+    <link rel="stylesheet" href="styles/towers-3d.css">
 </head>
 <body>
     <div id="game-container">
@@ -45,10 +46,18 @@
                             <div class="stat">Dano: <span id="tower-damage"></span></div>
                             <div class="stat">Alcance: <span id="tower-range"></span></div>
                             <div class="stat">Velocidade: <span id="tower-speed"></span></div>
+                            <div class="stat">Nível: <span id="tower-level"></span></div>
                         </div>
                         <div class="tower-actions">
                             <button id="upgrade-tower-btn" class="btn btn-upgrade">Melhorar</button>
+                            <button id="evolve-tower-btn" class="btn btn-evolve">Evoluir</button>
                             <button id="sell-tower-btn" class="btn btn-sell">Vender</button>
+                        </div>
+                        <div id="evolution-options" class="evolution-options hidden">
+                            <h4>Opções de Evolução</h4>
+                            <div id="evolution-list" class="evolution-list">
+                                <!-- Evoluções serão adicionadas dinamicamente -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -82,38 +91,40 @@
     </div>
 
     <!-- Scripts Core -->
-    <script src="js/core/Vector2D.js?v=16"></script>
+    <script src="js/core/Vector2D.js?v=20"></script>
     
     <!-- Scripts Utilitários -->
-    <script src="js/utils/constants.js?v=16"></script>
-    <script src="js/utils/helpers.js?v=16"></script>
+    <script src="js/utils/constants.js?v=20"></script>
+    <script src="js/utils/tower-evolution.js?v=20"></script>
+    <script src="js/utils/helpers.js?v=20"></script>
     
-    <script src="js/core/GameObject.js?v=16"></script>
+    <script src="js/core/GameObject.js?v=20"></script>
     
     <!-- Scripts de Entidades -->
-    <script src="js/entities/Enemy.js?v=16"></script>
-    <script src="js/entities/Tower.js?v=16"></script>
-    <script src="js/entities/Projectile.js?v=16"></script>
+    <script src="js/entities/TowerEvolutionTree.js?v=20"></script>
+    <script src="js/entities/Enemy.js?v=20"></script>
+    <script src="js/entities/Tower.js?v=20"></script>
+    <script src="js/entities/Projectile.js?v=20"></script>
     
     <!-- Scripts de Sistemas -->
-    <script src="js/systems/EffectSystem.js?v=16"></script>
+    <script src="js/systems/EffectSystem.js?v=20"></script>
     
     <!-- Scripts de Estratégias -->
-    <script src="js/strategies/AttackStrategy.js?v=16"></script>
+    <script src="js/strategies/AttackStrategy.js?v=20"></script>
     
     <!-- Scripts de Managers -->
-    <script src="js/managers/GameStateManager.js?v=16"></script>
-    <script src="js/managers/GameLoopManager.js?v=16"></script>
-    <script src="js/managers/InputManager.js?v=16"></script>
-    <script src="js/managers/WaveManager.js?v=16"></script>
-    <script src="js/managers/TowerManager.js?v=16"></script>
-    <script src="js/managers/GameManager.js?v=16"></script>
-    <script src="js/managers/UIManager.js?v=16"></script>
+    <script src="js/managers/GameStateManager.js?v=20"></script>
+    <script src="js/managers/GameLoopManager.js?v=20"></script>
+    <script src="js/managers/InputManager.js?v=20"></script>
+    <script src="js/managers/WaveManager.js?v=20"></script>
+    <script src="js/managers/TowerManager.js?v=20"></script>
+    <script src="js/managers/GameManager.js?v=20"></script>
+    <script src="js/managers/UIManager.js?v=20"></script>
     
     <!-- Scripts de Renderização -->
-    <script src="js/renderers/GameRenderer.js?v=16"></script>
+    <script src="js/renderers/GameRenderer.js?v=20"></script>
     
     <!-- Script Principal -->
-    <script src="js/main.js?v=16"></script>
+    <script src="js/main.js?v=20"></script>
 </body>
 </html> 

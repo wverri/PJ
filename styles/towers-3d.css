@@ -1,0 +1,573 @@
+/* Torres 2.5D - Efeitos Visuais Avançados */
+
+/* Estilos para torres no canvas */
+.tower-3d {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: all 0.3s ease;
+}
+
+.tower-3d.selected {
+    filter: drop-shadow(0 0 15px rgba(52, 152, 219, 0.8));
+}
+
+.tower-3d.evolved {
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));
+}
+
+/* Efeitos de partículas para torres */
+.tower-particles {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: particleFloat 2s ease-in-out infinite;
+}
+
+@keyframes particleFloat {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: translateY(-20px) scale(1.2);
+        opacity: 0.4;
+    }
+}
+
+/* Efeitos de evolução */
+.evolution-burst {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.8) 0%, transparent 70%);
+    animation: evolutionBurst 1s ease-out;
+    pointer-events: none;
+    z-index: 10;
+}
+
+@keyframes evolutionBurst {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+/* Auras de torres evoluídas */
+.tower-aura {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    animation: auraGlow 3s ease-in-out infinite alternate;
+}
+
+.tower-aura.fire {
+    background: radial-gradient(circle, rgba(255, 69, 0, 0.3) 0%, transparent 70%);
+}
+
+.tower-aura.ice {
+    background: radial-gradient(circle, rgba(135, 206, 235, 0.3) 0%, transparent 70%);
+}
+
+.tower-aura.lightning {
+    background: radial-gradient(circle, rgba(255, 255, 0, 0.3) 0%, transparent 70%);
+}
+
+.tower-aura.poison {
+    background: radial-gradient(circle, rgba(154, 205, 50, 0.3) 0%, transparent 70%);
+}
+
+.tower-aura.arcane {
+    background: radial-gradient(circle, rgba(147, 112, 219, 0.3) 0%, transparent 70%);
+}
+
+@keyframes auraGlow {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.3;
+    }
+    100% {
+        transform: scale(1.2);
+        opacity: 0.6;
+    }
+}
+
+/* Efeitos de tiro */
+.muzzle-flash {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 165, 0, 0.8) 30%, transparent 70%);
+    border-radius: 50%;
+    animation: muzzleFlash 0.2s ease-out;
+    pointer-events: none;
+    z-index: 5;
+}
+
+@keyframes muzzleFlash {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+}
+
+/* Efeitos de upgrade */
+.upgrade-glow {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(243, 156, 18, 0.6) 0%, transparent 70%);
+    animation: upgradeGlow 0.8s ease-out;
+    pointer-events: none;
+    z-index: 8;
+}
+
+@keyframes upgradeGlow {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* Indicadores de nível */
+.level-indicator {
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 10px;
+    border: 1px solid #d35400;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 6;
+}
+
+/* Indicadores de evolução */
+.evolution-indicator {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: white;
+    z-index: 7;
+    animation: evolutionPulse 2s ease-in-out infinite;
+}
+
+@keyframes evolutionPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(39, 174, 96, 0.5);
+    }
+}
+
+/* Efeitos de alcance */
+.range-indicator {
+    position: absolute;
+    border: 2px dashed rgba(255, 215, 0, 0.6);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    animation: rangeGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes rangeGlow {
+    0% {
+        opacity: 0.4;
+        transform: scale(0.98);
+    }
+    100% {
+        opacity: 0.8;
+        transform: scale(1.02);
+    }
+}
+
+/* Efeitos de projéteis */
+.projectile-trail {
+    position: absolute;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.arrow-trail {
+    width: 2px;
+    background: linear-gradient(90deg, rgba(139, 69, 19, 0.8) 0%, transparent 100%);
+    animation: arrowTrail 0.3s ease-out;
+}
+
+.fireball-trail {
+    width: 4px;
+    background: linear-gradient(90deg, rgba(255, 69, 0, 0.8) 0%, rgba(255, 165, 0, 0.4) 50%, transparent 100%);
+    animation: fireballTrail 0.5s ease-out;
+}
+
+.ice-trail {
+    width: 3px;
+    background: linear-gradient(90deg, rgba(135, 206, 235, 0.8) 0%, rgba(173, 216, 230, 0.4) 50%, transparent 100%);
+    animation: iceTrail 0.4s ease-out;
+}
+
+.lightning-trail {
+    width: 2px;
+    background: linear-gradient(90deg, rgba(255, 255, 0, 1) 0%, rgba(255, 255, 255, 0.6) 50%, transparent 100%);
+    animation: lightningTrail 0.2s ease-out;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 0, 0.8));
+}
+
+@keyframes arrowTrail {
+    0% { opacity: 1; transform: scaleX(1); }
+    100% { opacity: 0; transform: scaleX(0); }
+}
+
+@keyframes fireballTrail {
+    0% { opacity: 1; transform: scaleX(1); }
+    100% { opacity: 0; transform: scaleX(0); }
+}
+
+@keyframes iceTrail {
+    0% { opacity: 1; transform: scaleX(1); }
+    100% { opacity: 0; transform: scaleX(0); }
+}
+
+@keyframes lightningTrail {
+    0% { opacity: 1; transform: scaleX(1); }
+    100% { opacity: 0; transform: scaleX(0); }
+}
+
+/* Efeitos de impacto */
+.impact-effect {
+    position: absolute;
+    pointer-events: none;
+    z-index: 4;
+}
+
+.explosion-impact {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 69, 0, 1) 0%, rgba(255, 165, 0, 0.8) 30%, transparent 70%);
+    animation: explosionImpact 0.4s ease-out;
+}
+
+.ice-impact {
+    width: 30px;
+    height: 30px;
+    background: radial-gradient(circle, rgba(135, 206, 235, 0.9) 0%, rgba(173, 216, 230, 0.6) 50%, transparent 70%);
+    animation: iceImpact 0.6s ease-out;
+}
+
+.lightning-impact {
+    width: 35px;
+    height: 35px;
+    background: radial-gradient(circle, rgba(255, 255, 0, 1) 0%, rgba(255, 255, 255, 0.8) 40%, transparent 70%);
+    animation: lightningImpact 0.3s ease-out;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 0, 0.8));
+}
+
+@keyframes explosionImpact {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+@keyframes iceImpact {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1) rotate(180deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1.5) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes lightningImpact {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    25% {
+        transform: scale(1.5);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(0.8);
+        opacity: 0.8;
+    }
+    75% {
+        transform: scale(1.2);
+        opacity: 0.6;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+/* Efeitos de status nos inimigos */
+.status-effect {
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.burning-effect {
+    width: 20px;
+    height: 25px;
+    background: linear-gradient(0deg, rgba(255, 69, 0, 0.8) 0%, rgba(255, 165, 0, 0.6) 50%, transparent 100%);
+    animation: burningFlame 0.5s ease-in-out infinite alternate;
+}
+
+.frozen-effect {
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(135, 206, 235, 0.4) 0%, transparent 70%);
+    border: 1px solid rgba(135, 206, 235, 0.8);
+    animation: frozenGlow 1s ease-in-out infinite alternate;
+}
+
+.poisoned-effect {
+    width: 15px;
+    height: 15px;
+    background: radial-gradient(circle, rgba(154, 205, 50, 0.8) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: poisonBubble 1.5s ease-in-out infinite;
+}
+
+@keyframes burningFlame {
+    0% {
+        transform: scale(1) rotate(-2deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1.1) rotate(2deg);
+        opacity: 1;
+    }
+}
+
+@keyframes frozenGlow {
+    0% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0.6;
+        transform: scale(1.05);
+    }
+}
+
+@keyframes poisonBubble {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: translateY(-10px) scale(1.2);
+        opacity: 0.6;
+    }
+    100% {
+        transform: translateY(-20px) scale(0.8);
+        opacity: 0;
+    }
+}
+
+/* Efeitos de texto flutuante */
+.floating-text {
+    position: absolute;
+    font-weight: bold;
+    font-size: 14px;
+    pointer-events: none;
+    z-index: 9;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    animation: floatingText 1.5s ease-out forwards;
+}
+
+.damage-text {
+    color: #e74c3c;
+}
+
+.critical-text {
+    color: #f39c12;
+    font-size: 18px;
+    animation: criticalText 1.2s ease-out forwards;
+}
+
+.heal-text {
+    color: #27ae60;
+}
+
+.gold-text {
+    color: #f1c40f;
+}
+
+@keyframes floatingText {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-40px) scale(0.8);
+        opacity: 0;
+    }
+}
+
+@keyframes criticalText {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    20% {
+        transform: translateY(-5px) scale(1.2);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-50px) scale(0.9);
+        opacity: 0;
+    }
+}
+
+/* Efeitos de seleção de torre */
+.tower-selection-ring {
+    position: absolute;
+    border: 3px solid rgba(52, 152, 219, 0.8);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    animation: selectionRing 1s ease-in-out infinite;
+}
+
+@keyframes selectionRing {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.4;
+    }
+}
+
+/* Efeitos de hover para torres */
+.tower-hover-glow {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(52, 152, 219, 0.2) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+    animation: hoverGlow 0.3s ease-out;
+}
+
+@keyframes hoverGlow {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Responsividade para efeitos 2.5D */
+@media (max-width: 768px) {
+    .tower-aura {
+        animation-duration: 2s;
+    }
+    
+    .particle {
+        width: 3px;
+        height: 3px;
+    }
+    
+    .floating-text {
+        font-size: 12px;
+    }
+    
+    .critical-text {
+        font-size: 16px;
+    }
+    
+    .level-indicator {
+        font-size: 9px;
+        padding: 1px 4px;
+    }
+    
+    .evolution-indicator {
+        width: 16px;
+        height: 16px;
+        font-size: 10px;
+    }
+}
+
+/* Efeitos de performance reduzida para dispositivos menos potentes */
+@media (prefers-reduced-motion: reduce) {
+    .tower-aura,
+    .particle,
+    .evolution-indicator,
+    .range-indicator {
+        animation: none;
+    }
+    
+    .tower-3d {
+        transition: none;
+    }
+} 

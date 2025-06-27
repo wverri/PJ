@@ -156,6 +156,7 @@ class GameApplication extends EventEmitter {
         
         // Conecta eventos de entrada
         this.inputManager.on('canvasClick', (position) => {
+            console.log('🖱️ Clique detectado em:', position);
             this.gameManager.handleClick(position.x, position.y);
         });
         
@@ -164,6 +165,7 @@ class GameApplication extends EventEmitter {
         });
         
         this.inputManager.on('canvasRightClick', (position) => {
+            console.log('🖱️ Clique direito detectado em:', position);
             this.gameManager.handleRightClick(position.x, position.y);
         });
         
@@ -235,7 +237,8 @@ class GameApplication extends EventEmitter {
      * Conecta sistema de UI
      */
     connectUISystem() {
-        this.uiManager.on('towerPurchased', (towerType) => {
+        this.uiManager.on('towerTypeSelected', (towerType) => {
+            console.log('🎯 Torre selecionada via UI:', towerType);
             this.gameManager.selectTowerForPlacement(towerType);
         });
         
