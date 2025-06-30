@@ -53,7 +53,8 @@ O projeto foi completamente refatorado seguindo princípios de Clean Code e padr
 │   ├── renderers/          # Sistema de renderização
 │   │   └── GameRenderer.js # Renderização do jogo
 │   └── main.js             # Aplicação principal refatorada
-└── README.md               # Documentação
+├── README.md               # Documentação
+└── CODE_DOCS.md            # Documentação detalhada do código
 ```
 
 ### 🎯 Padrões de Design Implementados
