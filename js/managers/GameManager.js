@@ -287,6 +287,25 @@ class GameManager extends EventEmitter {
         this.emit('insufficientGold', upgradeCost);
         return false;
     }
+
+    /**
+     * Evolui torre selecionada
+     */
+    evolveTower() {
+        if (!this.selectedTower || !this.selectedTower.canEvolve()) return false;
+
+        const cost = this.selectedTower.getEvolutionCost();
+
+        if (this.gameState.gold >= cost) {
+            this.selectedTower.evolve();
+            this.spendGold(cost);
+            this.emit('towerEvolved', this.selectedTower);
+            return true;
+        }
+
+        this.emit('insufficientGold', cost);
+        return false;
+    }
     
     /**
      * Vende torre selecionada

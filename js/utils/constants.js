@@ -48,6 +48,14 @@ const TOWER_TYPES = {
         color: '#8B4513',
         borderColor: '#654321',
         icon: '🏹',
+        upgradeCost: 60,        // Aumentado
+        upgradeDamage: 8,       // Menor incremento
+        upgradeRange: 15,
+        maxLevel: 3,
+        evolutions: [
+            { cost: 200, damage: 20, range: 110, icon: '🏹' },
+            { cost: 350, damage: 30, range: 130, icon: '🏹' }
+        ]
         upgradeCost: 60,
         evolvesTo: ['ARCHER_VETERAN', 'ARCHER_HUNTER']
     },
@@ -216,7 +224,13 @@ const TOWER_TYPES = {
         borderColor: '#2F0052',
         icon: '🔮',
         upgradeCost: 90,
-        evolvesTo: ['MAGE_SCHOLAR', 'MAGE_BATTLE']
+        upgradeDamage: 12,
+        upgradeRange: 20,
+        maxLevel: 3,
+        evolutions: [
+            { cost: 250, damage: 35, range: 120, icon: '🔮' },
+            { cost: 400, damage: 50, range: 140, icon: '🔮' }
+        ]
     },
     
     // Evolução 1: Erudito

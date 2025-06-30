@@ -47,6 +47,9 @@ class Tower extends GameObject {
             speed: 0,
             special: 0
         };
+
+        // Evolução
+        this.evolutionStage = 0;
         
         // Estado visual aprimorado para 2.5D
         this.collisionRadius = this.size / 2;
@@ -471,7 +474,36 @@ class Tower extends GameObject {
     }
 
     /**
-     * Renderização aprimorada com efeito 2.5D
+     * Custo para evoluir a torre
+     */
+    getEvolutionCost() {
+        return this.config.evolutions?.[this.evolutionStage]?.cost ?? Infinity;
+    }
+
+    /**
+     * Verifica se pode evoluir
+     */
+    canEvolve() {
+        return this.config.evolutions && this.evolutionStage < this.config.evolutions.length;
+    }
+
+    /**
+     * Evolui a torre para próximo estágio
+     */
+    evolve() {
+        if (!this.canEvolve()) return false;
+
+        const data = this.config.evolutions[this.evolutionStage];
+        if (data.damage) this.damage = data.damage;
+        if (data.range) this.range = data.range;
+        if (data.attackSpeed) this.attackSpeed = data.attackSpeed;
+        if (data.icon) this.icon = data.icon;
+
+        this.evolutionStage++;
+        this.emit('evolved', this.evolutionStage);
+        return true;
+    }
+
      */
     onRender(ctx) {
         // Renderiza sombra primeiro
