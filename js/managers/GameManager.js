@@ -177,6 +177,7 @@ class GameManager extends EventEmitter {
      * Manipula clique do mouse
      */
     handleClick(x, y) {
+        console.log('🎯 Clique em:', { x, y, selectedTowerType: this.selectedTowerType });
         this.mousePosition = { x, y };
         
         if (this.selectedTowerType) {
@@ -204,9 +205,12 @@ class GameManager extends EventEmitter {
      * Tenta colocar uma torre
      */
     tryPlaceTower(x, y) {
+        console.log('🏗️ Tentando colocar torre:', this.selectedTowerType);
         const position = { x, y };
         
-        if (this.towerManager.canPlaceTower(position, this.selectedTowerType)) {
+        const canPlace = this.towerManager.canPlaceTower(position, this.selectedTowerType);
+        
+        if (canPlace) {
             const cost = TOWER_TYPES[this.selectedTowerType].cost;
             
             if (this.gameState.gold >= cost) {
@@ -214,11 +218,14 @@ class GameManager extends EventEmitter {
                 this.spendGold(cost);
                 this.selectedTowerType = null;
                 
+                console.log('✅ Torre colocada com sucesso!');
                 this.emit('towerPlaced', tower);
             } else {
+                console.log('❌ Ouro insuficiente');
                 this.emit('insufficientGold', cost);
             }
         } else {
+            console.log('❌ Posição inválida');
             this.emit('invalidPlacement', position);
         }
     }
@@ -251,6 +258,8 @@ class GameManager extends EventEmitter {
      * Seleciona tipo de torre para colocação
      */
     selectTowerForPlacement(towerType) {
+        console.log('🎯 Selecionando torre:', towerType);
+        
         if (TOWER_TYPES[towerType]) {
             this.selectedTowerType = towerType;
             this.selectedTower = null;

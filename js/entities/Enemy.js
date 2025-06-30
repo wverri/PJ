@@ -89,7 +89,9 @@ class Enemy extends GameObject {
      */
     updateTarget() {
         if (this.currentPathIndex < this.path.length) {
-            this.targetPosition = this.path[this.currentPathIndex].clone();
+            const pathPoint = this.path[this.currentPathIndex];
+            // Cria um novo Vector2D a partir do objeto simples {x, y}
+            this.targetPosition = new Vector2D(pathPoint.x, pathPoint.y);
         } else {
             this.targetPosition = null;
         }

@@ -417,6 +417,8 @@ class TowerPlacementValidator {
      * Valida se pode colocar torre na posição
      */
     validate(position, towerType, context) {
+        console.log('🔍 Validando colocação de torre:', { position, towerType });
+        
         const validations = [
             { name: 'Position', fn: this.validatePosition },
             { name: 'TowerType', fn: this.validateTowerType },
@@ -428,10 +430,12 @@ class TowerPlacementValidator {
         for (const validation of validations) {
             const result = validation.fn.call(this, position, towerType, context);
             if (!result) {
+                console.log(`❌ Falha na validação: ${validation.name}`);
                 return false;
             }
         }
         
+        console.log('✅ Todas as validações passaram!');
         return true;
     }
     
@@ -461,13 +465,13 @@ class TowerPlacementValidator {
         const minDistance = context.placementConfig.minDistanceFromPath;
         
         for (let i = 0; i < path.length - 1; i++) {
-            const distance = this.distanceToLineSegment(
-                position,
-                path[i],
-                path[i + 1]
-            );
+            const start = path[i];
+            const end = path[i + 1];
+            
+            const distance = this.distanceToLineSegment(position, start, end);
             
             if (distance < minDistance) {
+                console.log(`❌ Muito próximo do caminho (distância: ${distance.toFixed(1)})`);
                 return false;
             }
         }
@@ -490,12 +494,23 @@ class TowerPlacementValidator {
      */
     validateBounds(position, towerType, context) {
         const towerSize = TOWER_TYPES[towerType].size || 20;
-        const margin = Math.floor(towerSize / 2); // Usa metade do tamanho como margem
+        const margin = Math.floor(towerSize / 2);
         
-        const isValid = position.x >= margin &&
-               position.y >= margin &&
-               position.x <= GAME_CONFIG.CANVAS_WIDTH - margin &&
-               position.y <= GAME_CONFIG.CANVAS_HEIGHT - margin;
+        const bounds = {
+            minX: margin,
+            minY: margin,
+            maxX: GAME_CONFIG.CANVAS_WIDTH - margin,
+            maxY: GAME_CONFIG.CANVAS_HEIGHT - margin
+        };
+        
+        const isValid = position.x >= bounds.minX &&
+               position.y >= bounds.minY &&
+               position.x <= bounds.maxX &&
+               position.y <= bounds.maxY;
+               
+        if (!isValid) {
+            console.log(`❌ Fora dos limites (${position.x}, ${position.y})`);
+        }
                
         return isValid;
     }

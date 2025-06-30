@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Colocação de Torres</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #2d5016;
+            color: white;
+        }
+        
+        #test-canvas {
+            border: 2px solid #fff;
+            background: #4a7c59;
+            cursor: crosshair;
+        }
+        
+        .controls {
+            margin: 20px 0;
+        }
+        
+        .tower-btn {
+            padding: 10px 15px;
+            margin: 5px;
+            background: #8B4513;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .tower-btn:hover {
+            background: #A0522D;
+        }
+        
+        .tower-btn.selected {
+            background: #FFD700;
+            color: black;
+        }
+        
+        #log {
+            background: rgba(0,0,0,0.8);
+            padding: 10px;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Teste de Colocação de Torres</h1>
+    
+    <div class="controls">
+        <button class="tower-btn" data-tower="ARCHER">Arqueiro (80 🪙)</button>
+        <button class="tower-btn" data-tower="MAGE">Mago (120 🪙)</button>
+        <button class="tower-btn" data-tower="ICE_MAGE">Mago Gelo (150 🪙)</button>
+        <button class="tower-btn" data-tower="POISON_TOWER">Veneno (100 🪙)</button>
+    </div>
+    
+    <canvas id="test-canvas" width="800" height="600"></canvas>
+    
+    <div id="log"></div>
+    
+    <script>
+        // Configurações básicas para teste
+        const GAME_CONFIG = {
+            CANVAS_WIDTH: 800,
+            CANVAS_HEIGHT: 600,
+            PATH: [
+                {x: 0, y: 300},
+                {x: 150, y: 300},
+                {x: 150, y: 200},
+                {x: 300, y: 200},
+                {x: 300, y: 400},
+                {x: 450, y: 400},
+                {x: 450, y: 150},
+                {x: 600, y: 150},
+                {x: 600, y: 350},
+                {x: 750, y: 350},
+                {x: 800, y: 350}
+            ]
+        };
+        
+        const TOWER_TYPES = {
+            ARCHER: { name: 'Arqueiro', cost: 80, size: 24, color: '#8B4513' },
+            MAGE: { name: 'Mago', cost: 120, size: 24, color: '#4B0082' },
+            ICE_MAGE: { name: 'Mago Gelo', cost: 150, size: 24, color: '#87CEEB' },
+            POISON_TOWER: { name: 'Torre Veneno', cost: 100, size: 24, color: '#9ACD32' }
+        };
+        
+        // Estado do teste
+        let selectedTowerType = null;
+        let gold = 500;
+        let placedTowers = [];
+        
+        // Canvas e contexto
+        const canvas = document.getElementById('test-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Log
+        const logElement = document.getElementById('log');
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.innerHTML += `[${timestamp}] ${message}<br>`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message);
+        }
+        
+        // Configurar botões
+        document.querySelectorAll('.tower-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove seleção anterior
+                document.querySelectorAll('.tower-btn').forEach(b => b.classList.remove('selected'));
+                
+                // Seleciona nova torre
+                const towerType = btn.dataset.tower;
+                selectedTowerType = towerType;
+                btn.classList.add('selected');
+                
+                log(`Torre selecionada: ${TOWER_TYPES[towerType].name}`);
+            });
+        });
+        
+        // Configurar canvas
+        canvas.addEventListener('click', (event) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = Math.round((event.clientX - rect.left) * (canvas.width / rect.width));
+            const y = Math.round((event.clientY - rect.top) * (canvas.height / rect.height));
+            
+            log(`Clique detectado em: (${x}, ${y})`);
+            
+            if (selectedTowerType) {
+                const towerConfig = TOWER_TYPES[selectedTowerType];
+                
+                if (gold >= towerConfig.cost) {
+                    if (canPlaceTower(x, y)) {
+                        placedTowers.push({
+                            x: x,
+                            y: y,
+                            type: selectedTowerType,
+                            config: towerConfig
+                        });
+                        
+                        gold -= towerConfig.cost;
+                        log(`Torre ${towerConfig.name} colocada em (${x}, ${y}). Ouro restante: ${gold}`);
+                        
+                        // Limpa seleção
+                        selectedTowerType = null;
+                        document.querySelectorAll('.tower-btn').forEach(b => b.classList.remove('selected'));
+                        
+                        render();
+                    } else {
+                        log(`❌ Não é possível colocar torre em (${x}, ${y})`);
+                    }
+                } else {
+                    log(`❌ Ouro insuficiente! Necessário: ${towerConfig.cost}, Disponível: ${gold}`);
+                }
+            } else {
+                log('Nenhuma torre selecionada');
+            }
+        });
+        
+        function canPlaceTower(x, y) {
+            // Verifica limites
+            if (x < 20 || y < 20 || x > canvas.width - 20 || y > canvas.height - 20) {
+                log('❌ Fora dos limites do canvas');
+                return false;
+            }
+            
+            // Verifica distância do caminho
+            for (let i = 0; i < GAME_CONFIG.PATH.length - 1; i++) {
+                const start = GAME_CONFIG.PATH[i];
+                const end = GAME_CONFIG.PATH[i + 1];
+                const distance = distanceToLineSegment({x, y}, start, end);
+                
+                if (distance < 25) {
+                    log('❌ Muito próximo do caminho');
+                    return false;
+                }
+            }
+            
+            // Verifica sobreposição com outras torres
+            for (const tower of placedTowers) {
+                const distance = Math.sqrt((x - tower.x) ** 2 + (y - tower.y) ** 2);
+                if (distance < 40) {
+                    log('❌ Muito próximo de outra torre');
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        function distanceToLineSegment(point, lineStart, lineEnd) {
+            const A = point.x - lineStart.x;
+            const B = point.y - lineStart.y;
+            const C = lineEnd.x - lineStart.x;
+            const D = lineEnd.y - lineStart.y;
+            
+            const dot = A * C + B * D;
+            const lenSq = C * C + D * D;
+            
+            if (lenSq === 0) {
+                return Math.sqrt(A * A + B * B);
+            }
+            
+            const param = dot / lenSq;
+            
+            let xx, yy;
+            
+            if (param < 0) {
+                xx = lineStart.x;
+                yy = lineStart.y;
+            } else if (param > 1) {
+                xx = lineEnd.x;
+                yy = lineEnd.y;
+            } else {
+                xx = lineStart.x + param * C;
+                yy = lineStart.y + param * D;
+            }
+            
+            const dx = point.x - xx;
+            const dy = point.y - yy;
+            
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+        
+        function render() {
+            // Limpa canvas
+            ctx.fillStyle = '#4a7c59';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Desenha caminho
+            ctx.strokeStyle = '#8B4513';
+            ctx.lineWidth = 20;
+            ctx.beginPath();
+            ctx.moveTo(GAME_CONFIG.PATH[0].x, GAME_CONFIG.PATH[0].y);
+            for (let i = 1; i < GAME_CONFIG.PATH.length; i++) {
+                ctx.lineTo(GAME_CONFIG.PATH[i].x, GAME_CONFIG.PATH[i].y);
+            }
+            ctx.stroke();
+            
+            // Desenha torres
+            placedTowers.forEach(tower => {
+                ctx.fillStyle = tower.config.color;
+                ctx.beginPath();
+                ctx.arc(tower.x, tower.y, tower.config.size / 2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Nome da torre
+                ctx.fillStyle = '#fff';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(tower.config.name, tower.x, tower.y - 20);
+            });
+            
+            // Mostra preview da torre selecionada
+            if (selectedTowerType) {
+                const mousePos = getMousePos();
+                if (mousePos) {
+                    const config = TOWER_TYPES[selectedTowerType];
+                    ctx.fillStyle = config.color;
+                    ctx.globalAlpha = 0.5;
+                    ctx.beginPath();
+                    ctx.arc(mousePos.x, mousePos.y, config.size / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.globalAlpha = 1.0;
+                }
+            }
+            
+            // Mostra informações
+            ctx.fillStyle = '#fff';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText(`Ouro: ${gold}`, 10, 30);
+            ctx.fillText(`Torres: ${placedTowers.length}`, 10, 50);
+        }
+        
+        let lastMousePos = null;
+        
+        canvas.addEventListener('mousemove', (event) => {
+            const rect = canvas.getBoundingClientRect();
+            lastMousePos = {
+                x: Math.round((event.clientX - rect.left) * (canvas.width / rect.width)),
+                y: Math.round((event.clientY - rect.top) * (canvas.height / rect.height))
+            };
+            
+            if (selectedTowerType) {
+                render();
+            }
+        });
+        
+        function getMousePos() {
+            return lastMousePos;
+        }
+        
+        // Renderização inicial
+        render();
+        log('Sistema de teste inicializado');
+    </script>
+</body>
+</html> 
