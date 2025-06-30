@@ -603,32 +603,48 @@ class TowerRenderStrategy extends RenderStrategy {
     }
     
     renderTowerBase(ctx, tower) {
+        const w = (tower.size + 5) * 1.4;
+        const h = (tower.size + 5) * 0.6;
+
+        ctx.save();
+        ctx.translate(tower.position.x, tower.position.y + 5);
+
         ctx.fillStyle = '#8B4513';
         ctx.beginPath();
-        ctx.arc(tower.position.x, tower.position.y + 5, tower.size + 5, 0, Math.PI * 2);
+        ctx.ellipse(0, 0, w, h, 0, 0, Math.PI * 2);
         ctx.fill();
-        
+
         ctx.strokeStyle = '#654321';
         ctx.lineWidth = 2;
         ctx.stroke();
+
+        ctx.restore();
     }
     
     renderTowerBody(ctx, tower) {
+        ctx.save();
         ctx.fillStyle = tower.color;
         ctx.beginPath();
-        ctx.arc(tower.position.x, tower.position.y, tower.size, 0, Math.PI * 2);
+        ctx.ellipse(tower.position.x, tower.position.y - tower.size * 0.2, tower.size, tower.size * 1.2, 0, 0, Math.PI * 2);
         ctx.fill();
-        
+
         ctx.strokeStyle = tower.borderColor || '#000';
         ctx.lineWidth = 2;
         ctx.stroke();
-        
-        // Desenha ícone da torre
+
+        // Brilho superior para efeito 2.5D
+        ctx.fillStyle = 'rgba(255,255,255,0.2)';
+        ctx.beginPath();
+        ctx.ellipse(tower.position.x, tower.position.y - tower.size * 0.8, tower.size * 0.6, tower.size * 0.3, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Ícone da torre
         ctx.fillStyle = '#FFF';
         ctx.font = `${tower.size}px Arial`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(tower.icon, tower.position.x, tower.position.y);
+        ctx.fillText(tower.icon, tower.position.x, tower.position.y - tower.size * 0.1);
+        ctx.restore();
     }
     
     renderTowerWeapon(ctx, tower) {

@@ -48,7 +48,11 @@ const TOWER_TYPES = {
         upgradeCost: 60,        // Aumentado
         upgradeDamage: 8,       // Menor incremento
         upgradeRange: 15,
-        maxLevel: 3
+        maxLevel: 3,
+        evolutions: [
+            { cost: 200, damage: 20, range: 110, icon: '🏹' },
+            { cost: 350, damage: 30, range: 130, icon: '🏹' }
+        ]
     },
     
     MAGE: {
@@ -67,7 +71,11 @@ const TOWER_TYPES = {
         upgradeCost: 90,
         upgradeDamage: 12,
         upgradeRange: 20,
-        maxLevel: 3
+        maxLevel: 3,
+        evolutions: [
+            { cost: 250, damage: 35, range: 120, icon: '🔮' },
+            { cost: 400, damage: 50, range: 140, icon: '🔮' }
+        ]
     },
     
     ICE_MAGE: {
